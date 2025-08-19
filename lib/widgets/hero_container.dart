@@ -190,8 +190,8 @@ class _HeroContainerState extends State<HeroContainer> {
             child: Material(
               animationDuration: Duration.zero,
               elevation: widget.openedElevation,
-              color: widget.openedColor,
-              shape: widget.openedShape,
+              color: widget.closedColor,
+              shape: widget.closedShape,
               child: child!,
             ),
           );
