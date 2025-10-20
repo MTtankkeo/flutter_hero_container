@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hero_container/components/hero_container_fragment.dart';
 import 'package:hero_container/widgets/hero_container.dart';
+import 'package:flutter/foundation.dart';
 
 /// Status of a [HeroContainer] transition.
 enum HeroContainerStatus {
@@ -64,13 +65,25 @@ class HeroContainerController {
     RenderRepaintBoundary boundary =
         key.currentContext!.findRenderObject() as RenderRepaintBoundary;
 
-    // If some animation is currently running in target object or
-    // whenever needsPaint is true, wait for sometime till debugNeedsPaint
-    // become false again.
+    // If some animation is currently running in target object or whenever
+    // needsPaint is true, wait for end of frame to start capturing widget.
     if (boundary.debugNeedsPaint) {
-      await Future.delayed(Duration(milliseconds: 250));
-      if (!context.mounted) return null;
-      return captureWidget(context, key);
+      const int maxRetries = 5;
+      for (int i = 0; i < maxRetries; i++) {
+        await WidgetsBinding.instance.endOfFrame;
+        if (!context.mounted) return null;
+        if (!boundary.debugNeedsPaint) break;
+      }
+
+      // If it's still painting, we can't capture it.
+      if (boundary.debugNeedsPaint) {
+        if (kDebugMode) {
+          debugPrint(
+            'HeroContainer: Failed to capture widget after $maxRetries retries.',
+          );
+        }
+        return null;
+      }
     }
 
     // Convert to image with device pixel ratio for high resolution.
