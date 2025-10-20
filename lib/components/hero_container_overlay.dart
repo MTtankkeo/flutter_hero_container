@@ -334,6 +334,7 @@ class _RenderOverlayState extends State<_RenderOverlay>
               child: AbsoluteOffset(
                 offset: offset,
                 child: Material(
+                  clipBehavior: Clip.hardEdge,
                   animationDuration: Duration.zero,
                   elevation: elevation,
                   color: color,

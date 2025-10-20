@@ -177,27 +177,27 @@ class _HeroContainerState extends State<HeroContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(
-      key: controller.fromKey,
-      child: ListenableBuilder(
-        listenable: controller.statusNotifier,
-        builder: (context, child) {
-          return Visibility(
-            visible: controller.status == HeroContainerStatus.idle,
-            maintainSize: true,
-            maintainState: true,
-            maintainAnimation: true,
-            child: Material(
-              animationDuration: Duration.zero,
-              elevation: widget.openedElevation,
-              color: widget.closedColor,
-              shape: widget.closedShape,
+    return ListenableBuilder(
+      listenable: controller.statusNotifier,
+      builder: (context, child) {
+        return Visibility(
+          visible: controller.status == HeroContainerStatus.idle,
+          maintainSize: true,
+          maintainState: true,
+          maintainAnimation: true,
+          child: Material(
+            animationDuration: Duration.zero,
+            elevation: widget.closedElevation,
+            color: widget.closedColor,
+            shape: widget.closedShape,
+            child: RepaintBoundary(
+              key: controller.fromKey,
               child: child!,
             ),
-          );
-        },
-        child: widget.closedBuilder(context, _openContainer),
-      ),
+          ),
+        );
+      },
+      child: widget.closedBuilder(context, _openContainer),
     );
   }
 

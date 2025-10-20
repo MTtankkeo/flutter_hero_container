@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hero_container/flutter_hero_container.dart';
+import 'package:hero_container/hero_container.dart';
 
 void main() {
   runApp(MyApp());
