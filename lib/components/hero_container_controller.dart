@@ -64,6 +64,15 @@ class HeroContainerController {
     RenderRepaintBoundary boundary =
         key.currentContext!.findRenderObject() as RenderRepaintBoundary;
 
+    // If some animation is currently running in target object or
+    // whenever needsPaint is true, wait for sometime till debugNeedsPaint
+    // become false again.
+    if (boundary.debugNeedsPaint) {
+      await Future.delayed(Duration(milliseconds: 250));
+      if (!context.mounted) return null;
+      return captureWidget(context, key);
+    }
+
     // Convert to image with device pixel ratio for high resolution.
     ui.Image image = await boundary.toImage(
       pixelRatio: MediaQuery.of(context).devicePixelRatio,
